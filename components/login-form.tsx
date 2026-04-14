@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "@/lib/client";
-import { getClientBaseUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 
 export function LoginForm({
@@ -29,10 +28,13 @@ export function LoginForm({
     setError(null);
 
     try {
+      const redirectTo = new URL("/auth/oauth", window.location.origin);
+      redirectTo.searchParams.set("next", "/my-events");
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${getClientBaseUrl()}/auth/oauth?next=/my-events`,
+          redirectTo: redirectTo.toString(),
         },
       });
 
