@@ -18,21 +18,27 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState<string | null>(null);
-  const [isLoadingProvider, setIsLoadingProvider] = useState<
-    "github" | "google" | null
-  >(null);
+  const [isLoadingProvider, setIsLoadingProvider] = useState<"google" | null>(
+    null,
+  );
 
-  const handleSocialLogin = async (provider: "github" | "google") => {
+  const handleGoogleLogin = async () => {
     const supabase = createClient();
-    setIsLoadingProvider(provider);
+    setIsLoadingProvider("google");
     setError(null);
 
     try {
-      const redirectTo = new URL("/auth/oauth", window.location.origin);
+      const configuredBaseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+      const oauthBaseUrl =
+        configuredBaseUrl && configuredBaseUrl.length > 0 ?
+          configuredBaseUrl
+        : window.location.origin;
+
+      const redirectTo = new URL("/auth/oauth", oauthBaseUrl);
       redirectTo.searchParams.set("next", "/my-events");
 
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: "google",
         options: {
           redirectTo: redirectTo.toString(),
         },
@@ -58,23 +64,13 @@ export function LoginForm({
             <Button
               type="button"
               className="w-full"
-              onClick={() => handleSocialLogin("google")}
+              onClick={handleGoogleLogin}
               disabled={isLoadingProvider !== null}
               variant="outline"
             >
               {isLoadingProvider === "google" ?
                 "Connecting..."
               : "Continue with Google"}
-            </Button>
-            <Button
-              type="button"
-              className="w-full"
-              onClick={() => handleSocialLogin("github")}
-              disabled={isLoadingProvider !== null}
-            >
-              {isLoadingProvider === "github" ?
-                "Logging in..."
-              : "Continue with GitHub"}
             </Button>
           </div>
         </CardContent>
