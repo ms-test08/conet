@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { ArrowLeft, MessageSquareText } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -191,39 +189,8 @@ export default async function ChatDetailsPage({
   const messages = pageState.messages.slice().reverse();
 
   return (
-    <div className="min-h-svh bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.14),transparent_30%),linear-gradient(180deg,#f6f0e8_0%,#edf2f7_100%)] px-4 py-6 md:px-8">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-black/45">
-              Event chat
-            </p>
-            <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-950">
-              {formatConversationTitle(pageState.conversation)}
-            </h1>
-            <p className="mt-2 text-sm text-slate-600">
-              {pageState.eventTitle} ·{" "}
-              {formatConversationSubtitle(pageState.conversation)}
-            </p>
-          </div>
-
-          <Button
-            asChild
-            variant="outline"
-            className="rounded-full border-slate-300"
-          >
-            <Link href="/my-events">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to My Events
-            </Link>
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <MessageSquareText className="h-4 w-4" />
-          <span>Conversation id {conversationId}</span>
-        </div>
-
+    <div className="min-h-svh bg-linear-to-b from-[#ececec] via-[#e6e6e6] to-[#dcdcdc] sm:px-6 sm:py-8">
+      <div className="mx-auto flex min-h-svh w-full flex-col bg-[#efefef] shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:min-h-[90svh] sm:max-w-107.5 sm:rounded-[2.2rem] sm:border sm:border-black/10 sm:shadow-[0_34px_90px_rgba(15,23,42,0.25)]">
         <ChatThread
           conversation={pageState.conversation}
           conversationId={conversationId}
@@ -231,7 +198,14 @@ export default async function ChatDetailsPage({
           initialMessages={messages}
           initialNextBefore={pageState.nextBefore}
           initialHasMore={pageState.hasMore}
+          backHref="/my-events"
+          eventTitle={pageState.eventTitle}
         />
+      </div>
+      <div className="mx-auto mt-4 hidden w-full max-w-107.5 sm:block">
+        <Button asChild variant="outline" className="w-full rounded-full">
+          <Link href="/my-events">Back to My Events</Link>
+        </Button>
       </div>
     </div>
   );

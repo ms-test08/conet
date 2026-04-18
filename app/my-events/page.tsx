@@ -14,7 +14,7 @@ import { getMyEvents, type BackendEventSummary } from "@/lib/backend";
 import { createClient } from "@/lib/server";
 import { getCurrentUserSession } from "@/lib/session";
 
-const allowedTypes = ["upcoming", "past", "saved"] as const;
+const allowedTypes = ["upcoming"] as const;
 
 type EventType = (typeof allowedTypes)[number];
 
@@ -84,7 +84,8 @@ export default async function MyEventsPage({
             const label =
               item === "upcoming" ?
                 `Upcoming (${events.length})`
-              : item.charAt(0).toUpperCase() + item.slice(1);
+              : (item as string).charAt(0).toUpperCase() +
+                (item as string).slice(1);
 
             return (
               <Link
@@ -108,9 +109,7 @@ export default async function MyEventsPage({
             <CardHeader>
               <CardTitle className="text-xl">No events found</CardTitle>
               <CardDescription>
-                {type === "saved" ?
-                  "You have no saved events yet."
-                : "You are not registered for any events in this view yet."}
+                You are not registered for any events in this view yet.
               </CardDescription>
             </CardHeader>
           </Card>
