@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
+import { CalendarDays, MapPin, MessagesSquare, Ticket } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -181,14 +181,28 @@ export default async function MyEventsPage({
                       </Link>
                     </Button>
 
-                    <Button
-                      className="h-12 flex-1 rounded-full border-slate-300 text-base font-bold text-slate-700"
-                      variant="outline"
-                      disabled
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      Event Group
-                    </Button>
+                    {event.conversation_id ?
+                      <Button
+                        asChild
+                        className="h-12 flex-1 rounded-full border-slate-300 text-base font-bold text-slate-700"
+                        variant="outline"
+                      >
+                        <Link
+                          href={`/chat-details?eventId=${event.id}&conversationId=${event.conversation_id}`}
+                        >
+                          <MessagesSquare className="mr-2 h-4 w-4" />
+                          Event Chat
+                        </Link>
+                      </Button>
+                    : <Button
+                        className="h-12 flex-1 rounded-full border-slate-300 text-base font-bold text-slate-700"
+                        variant="outline"
+                        disabled
+                      >
+                        <MessagesSquare className="mr-2 h-4 w-4" />
+                        Event Chat
+                      </Button>
+                    }
                   </div>
                 </CardContent>
               </Card>
