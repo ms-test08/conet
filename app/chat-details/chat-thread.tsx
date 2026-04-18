@@ -49,10 +49,7 @@ function resolveAvatarUrl(conversation: BackendConversationSummary) {
 
 function resolveAvatarLabel(conversation: BackendConversationSummary) {
   const title = resolveConversationTitle(conversation);
-  const words = title
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2);
+  const words = title.split(/\s+/).filter(Boolean).slice(0, 2);
 
   if (!words.length) {
     return "EV";
@@ -123,7 +120,10 @@ export function ChatThread({
   }, [conversation.members]);
 
   const selfMember = useMemo(
-    () => (conversation.members ?? []).find((member) => member.id === currentUserId),
+    () =>
+      (conversation.members ?? []).find(
+        (member) => member.id === currentUserId,
+      ),
     [conversation.members, currentUserId],
   );
 
@@ -299,12 +299,13 @@ export function ChatThread({
               : sender ? formatDisplayName(sender)
               : "Participant";
 
-            const senderBadge = senderLabel
-              .split(/\s+/)
-              .filter(Boolean)
-              .slice(0, 2)
-              .map((part) => part[0]?.toUpperCase() ?? "")
-              .join("") || "P";
+            const senderBadge =
+              senderLabel
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part[0]?.toUpperCase() ?? "")
+                .join("") || "P";
 
             return (
               <div
@@ -355,20 +356,43 @@ export function ChatThread({
 
       <form
         onSubmit={handleSendMessage}
-        className="border-t border-black/10 bg-[#ececec] px-3 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-2 sm:px-4 sm:pb-4"
+        className="border-t border-black/10 bg-[#ececec] px-3 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-3 sm:px-4 sm:pb-4"
       >
         {!canSendMessages ?
-          <p className="mb-2 text-center text-sm font-medium text-rose-500">
-            Only admins can send messages in this group
-          </p>
+          <div className="mb-3 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-linear-to-r from-amber-50 to-orange-50 px-3.5 py-2.5 sm:mb-4">
+            <div className="mt-0.5 size-5 shrink-0 rounded-full bg-amber-400/20 flex items-center justify-center">
+              <div className="size-2 rounded-full bg-amber-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-amber-900">
+                Only admins can send messages in this group
+              </p>
+              <p className="mt-0.5 text-xs text-amber-700 leading-snug">
+                You can read and react to messages, but only group admins can
+                send new ones.
+              </p>
+            </div>
+          </div>
         : null}
 
-        <div className="flex items-center gap-2 rounded-[1.4rem] bg-[#e7e7e7]">
+        <div
+          className={[
+            "flex items-center gap-2 rounded-[1.4rem] transition-all",
+            canSendMessages ?
+              "bg-[#e7e7e7] hover:bg-[#e0e0e0]"
+            : "bg-slate-100",
+          ].join(" ")}
+        >
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="size-10 shrink-0 rounded-full text-slate-500 hover:bg-black/5"
+            className={[
+              "size-10 shrink-0 rounded-full transition-colors",
+              canSendMessages ?
+                "text-slate-500 hover:bg-black/5"
+              : "text-slate-300 cursor-not-allowed",
+            ].join(" ")}
             disabled
             aria-label="Attachment"
           >
@@ -381,28 +405,41 @@ export function ChatThread({
             onChange={(event) => setDraft(event.target.value)}
             onInput={handleDraftInput}
             placeholder={
-              canSendMessages ?
-                "Type your message"
-              : "You can only read messages in this group"
+              canSendMessages ? "Type your message" : (
+                "You can only read messages in this group"
+              )
             }
             rows={1}
             readOnly={!canSendMessages}
-            className="min-h-11 max-h-35 flex-1 resize-none rounded-2xl border border-transparent bg-white/85 px-4 py-2.5 text-[1.02rem] text-slate-700 outline-none placeholder:text-slate-500 focus:border-slate-300"
+            className={[
+              "min-h-11 max-h-35 flex-1 resize-none rounded-2xl border text-[1.02rem] outline-none transition-colors",
+              canSendMessages ?
+                "border-transparent bg-white/85 px-4 py-2.5 text-slate-700 placeholder:text-slate-500 focus:border-slate-300"
+              : "border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-400 placeholder:text-slate-400",
+            ].join(" ")}
           />
 
           <Button
             type="submit"
             size="icon"
-            className="size-11 shrink-0 rounded-full bg-slate-500 text-white hover:bg-slate-600"
-            disabled={!canSendMessages || isSending || draft.trim().length === 0}
+            className={[
+              "size-11 shrink-0 rounded-full transition-all font-medium",
+              canSendMessages && draft.trim().length > 0 ?
+                "bg-slate-500 text-white hover:bg-slate-600 active:scale-95"
+              : "bg-slate-300 text-slate-400 cursor-not-allowed",
+            ].join(" ")}
+            disabled={
+              !canSendMessages || isSending || draft.trim().length === 0
+            }
             aria-label="Send message"
           >
             <SendHorizonal className="size-5" />
           </Button>
         </div>
 
-        <p className="mt-2 truncate text-center text-[11px] text-slate-400">
-          Conversation ID: {conversationId} {eventTitle ? `· ${eventTitle}` : ""}
+        <p className="mt-2.5 truncate text-center text-[11px] text-slate-400">
+          Conversation ID: {conversationId}{" "}
+          {eventTitle ? `· ${eventTitle}` : ""}
         </p>
       </form>
     </div>
