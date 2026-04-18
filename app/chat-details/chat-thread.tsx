@@ -436,11 +436,6 @@ export function ChatThread({
             <SendHorizonal className="size-5" />
           </Button>
         </div>
-
-        <p className="mt-2.5 truncate text-center text-[11px] text-slate-400">
-          Conversation ID: {conversationId}{" "}
-          {eventTitle ? `· ${eventTitle}` : ""}
-        </p>
       </form>
     </div>
   );
